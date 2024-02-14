@@ -10,7 +10,7 @@ openai.api_key = open('.venv/API_KEY', 'r').read() # text file containing the Op
 def get_stock_price(ticker):
     return str(yf.Ticker(ticker).history(period='1y').iloc[-1].Close)
 
-# Calculate the stock moving average
+# Calculate the simple moving average
 def calculate_SMA(ticker, window):
     data = yf.Ticker(ticker).history(period='1y').Close
     return str(data.rolling(window=window).mean().iloc[-1])
@@ -54,6 +54,13 @@ def plot_stock_price(ticker):
     plt.grid(True)
     plt.savefig('stock.png')
     plt.close()
+
+def get_stock_news(ticker):
+    news = yf.Ticker(ticker).get_news()
+    str_news = ""
+    for i in range(len(news)):
+        str_news += news[i].get('title') + '\n' + news[i].get('link')
+    return str_news
 
 functions = [
 
@@ -148,6 +155,20 @@ functions = [
             },
             'required': ['ticker']
         }
+    },
+    {
+        'name': 'get_stock_news',
+        'description': 'Gets the latest news relating to the stock provided.',
+        'parameters': {
+            'type': 'object',
+            'properties': {
+                'ticker': {
+                    'type': 'string',
+                    'description': 'The stock ticker symbol for a company(for example AAPL for Apple).'
+                }
+            },
+            'required': ['ticker']
+        }
     }
 
 
@@ -159,7 +180,8 @@ available_functions = {
     'calculate_EMA': calculate_EMA,
     'calculate_RSI': calculate_RSI,
     'calculate_MACD': calculate_MACD,
-    'plot_stock_price': plot_stock_price
+    'plot_stock_price': plot_stock_price,
+    'get_stock_news': get_stock_news
 }
 
 if 'messages' not in st.session_state:
@@ -182,7 +204,7 @@ if user_input:
         if response_message.get('function_call'):
             function_name = response_message['function_call']['name']
             function_args = json.loads(response_message['function_call']['arguments'])
-            if function_name in ['get_stock_price', 'calculate_RSI', 'calculate_MACD', 'plot_stock_price']:
+            if function_name in ['get_stock_price', 'calculate_RSI', 'calculate_MACD', 'plot_stock_price', 'get_stock_news']:
                 args_dictionary = {'ticker': function_args.get('ticker')}
             elif function_name in ['calculate_SMA', 'calculate_EMA']:
                 args_dictionary = {'ticker': function_args.get('ticker'), 'window': function_args.get('window')}
