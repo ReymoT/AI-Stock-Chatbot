@@ -9,3 +9,5 @@ The chatbot provides the following stock technical analysis indicators:
 * Exponential Moving Average
 * Relative Strength Index
 * Moving Average Convergence/Divergence
+* Plot Stocks
+* Get Latest News Relating to the Stock
