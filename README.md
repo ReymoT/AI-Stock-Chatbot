@@ -4,7 +4,7 @@ All financial data is fetched from Yahoo Finance using the yfinance module.
 
 Program is executed by navigating to the directory and running `streamlit run main.py`
 
-The chatbot provides the following stock technical analysis indicators:
+The chatbot provides the following stock technical analysis indicators and functionalities:
 * Simple Moving Average
 * Exponential Moving Average
 * Relative Strength Index
